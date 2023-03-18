@@ -1,0 +1,6 @@
+enum MangaStatus {
+    ONGOING
+    COMPLETED
+    HIATUS
+    CANCELLED
+}

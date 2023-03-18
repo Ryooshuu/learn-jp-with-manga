@@ -1,0 +1,7 @@
+enum MangaDemographic {
+    SHOUNEN
+    SHOUJO
+    SEINEN
+    JOSEI
+    KODOMO
+}

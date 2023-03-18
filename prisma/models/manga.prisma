@@ -1,0 +1,46 @@
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model Manga {
+    id                 String            @id @default(uuid()) @db.Uuid
+    title              String
+    alternative_titles String[]
+    // eventually these should be a separate model
+    authors            String[]
+    artists            String[]
+    description        String            @default("")
+    genres             String[]
+    themes             String[]
+    demographic        MangaDemographic?
+    status             MangaStatus?
+    cover_hash         String?
+    publicized_at      DateTime
+    created_at         DateTime          @default(now())
+    updated_at         DateTime          @updatedAt
+    chapters           Chapter[]
+
+    @@map("mangas")
+}
+
+enum MangaStatus {
+    ONGOING
+    COMPLETED
+    HIATUS
+    CANCELLED
+}
+
+enum MangaDemographic {
+    SHOUNEN
+    SHOUJO
+    SEINEN
+    JOSEI
+    KODOMO
+}
+
+model Chapter {
+    id       String @id @default(uuid()) @db.Uuid
+    manga_id String @db.Uuid
+    manga    Manga  @relation(fields: [manga_id], references: [id])
+}

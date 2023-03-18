@@ -1,0 +1,6 @@
+model File {
+    hash String @unique
+    name String
+
+    @@map("files")
+}
