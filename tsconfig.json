@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "outDir": "./dist",
+        "module": "commonjs",
+        "target": "esnext",
+        "strict": true,
+        "declaration": true,
+        "esModuleInterop": true,
+        "allowJs": true,
+        "removeComments": true,
+        "noImplicitAny": true,
+        "noFallthroughCasesInSwitch": true
+    },
+    "include": [
+        "prisma/**/*.ts",
+        "src/**/*",
+        "routes/**/*.ts"
+    ],
+}
