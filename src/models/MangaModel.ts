@@ -1,11 +1,11 @@
-import { Manga, MangaDemographic, MangaStatus } from "@prisma/client";
+import { Manga as DbManga, MangaDemographic, MangaStatus } from "@prisma/client";
 import { Database } from "../../prisma";
 import { File } from "./File";
 import { IHasFiles } from "../database/IHasFiles";
 import { IHasGuidId } from "../database/IHasGuidId";
 import { GetFileInDatabase } from "../database/ModelManager";
 
-export class MangaModel implements Manga, IHasGuidId, IHasFiles {
+export class Manga implements DbManga, IHasGuidId, IHasFiles {
     id: string;
     title: string;
     alternative_titles: string[];
@@ -24,7 +24,7 @@ export class MangaModel implements Manga, IHasGuidId, IHasFiles {
     Files: File[] = [];
     Hash: string = "";
 
-    constructor(data: Manga) {
+    constructor(data: DbManga) {
         this.id = data.id;
         this.title = data.title;
         this.alternative_titles = data.alternative_titles;
@@ -52,15 +52,22 @@ export class MangaModel implements Manga, IHasGuidId, IHasFiles {
                 this.Files.push(file);
         }
     }
+
+    getCover(): File | null {
+        if (this.Files.length > 0)
+            return this.Files[0];
+
+        return null;
+    }
 }
 
-export async function GetMangaById(id: string): Promise<MangaModel | null> {
+export async function GetMangaById(id: string): Promise<Manga | null> {
     let manga = await Database.manga.findFirst({ where: { id: id } });
 
     if (!manga)
         return null;
 
-    let model = new MangaModel(manga);
+    let model = new Manga(manga);
     await model.loadFiles();
 
     return model;

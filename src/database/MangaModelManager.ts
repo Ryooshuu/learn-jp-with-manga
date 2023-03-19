@@ -1,13 +1,13 @@
 import { Database } from "../../prisma";
 import { ModelManager } from "./ModelManager";
-import { MangaModel } from "../models/MangaModel";
+import { Manga } from "../models/MangaModel";
 
-export class MangaModelManager extends ModelManager<MangaModel> {
+export class MangaModelManager extends ModelManager<Manga> {
     GetManagedTable() {
         return Database.manga;
     }
 
-    async SetCover(item: MangaModel, filename: string, contents: Buffer) {
+    async SetCover(item: Manga, filename: string, contents: Buffer) {
         if (item.Files.length > 0) {
             let cover = item.Files[0];
 
@@ -20,7 +20,7 @@ export class MangaModelManager extends ModelManager<MangaModel> {
         await this.updateCoverHash(item);
     }
 
-    private async updateCoverHash(item: MangaModel) {
+    private async updateCoverHash(item: Manga) {
         if (item.Files.length > 0) {
             await Database.manga.update({
                 where: { id: item.id },
