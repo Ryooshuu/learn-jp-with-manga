@@ -39,20 +39,20 @@ export class FileStore {
         return file;
     }
 
-    Exists(file: File): boolean {
-        return fs.existsSync(path.join(this.target, file.GetStoragePath()));
-    }
-
-    GetPath(file: File): string {
-        return path.join(this.target, file.GetStoragePath());
-    }
-
     async Delete(file: File): Promise<void> {
         fs.unlinkSync(path.join(this.target, file.GetStoragePath()));
 
         await Database.file.delete({
             where: { hash: file.hash }
         });
+    }
+
+    Exists(file: File): boolean {
+        return fs.existsSync(path.join(this.target, file.GetStoragePath()));
+    }
+
+    GetPath(file: File): string {
+        return path.join(this.target, file.GetStoragePath());
     }
 
     private copyToStore(file: File, data: Buffer): void {

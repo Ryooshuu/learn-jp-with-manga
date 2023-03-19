@@ -44,7 +44,7 @@ export class Account implements DeeperAccount, IHasGuidId, IHasFiles {
         this.groups = data.groups;
     }
     
-    async loadFiles(): Promise<void> {
+    async LoadFiles(): Promise<void> {
         if (this.Files.length > 0)
             return;
 
@@ -56,14 +56,14 @@ export class Account implements DeeperAccount, IHasGuidId, IHasFiles {
         }
     }
 
-    getAvatar(): File | null {
+    get avatar(): File | null {
         if (this.Files.length > 0)
             return this.Files[0];
 
         return null;
     }
 
-    hasPermission(permission: number): boolean {
+    HasPermission(permission: number): boolean {
         const adminGroup = this.groups.find(g => g.permissions_grant & Permissions.ADMINISTRATOR);
 
         if (adminGroup)
@@ -81,9 +81,11 @@ export async function GetAccountById(id: string): Promise<Account | null> {
         return null;
 
     let groups = await Database.group.findMany({ where: { accounts: { some: { id: id } } } });
-
-    return new Account({
+    let model = new Account({
         ...account,
         groups: groups
     });
+
+    await model.LoadFiles();
+    return model;
 }

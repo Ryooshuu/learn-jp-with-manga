@@ -41,7 +41,7 @@ export class Manga implements DbManga, IHasGuidId, IHasFiles {
         this.updated_at = data.updated_at;
     }
 
-    async loadFiles(): Promise<void> {
+    async LoadFiles(): Promise<void> {
         if (this.Files.length > 0)
             return;
 
@@ -53,7 +53,7 @@ export class Manga implements DbManga, IHasGuidId, IHasFiles {
         }
     }
 
-    getCover(): File | null {
+    get Cover(): File | null {
         if (this.Files.length > 0)
             return this.Files[0];
 
@@ -68,7 +68,7 @@ export async function GetMangaById(id: string): Promise<Manga | null> {
         return null;
 
     let model = new Manga(manga);
-    await model.loadFiles();
+    await model.LoadFiles();
 
     return model;
 }
