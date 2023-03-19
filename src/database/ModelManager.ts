@@ -1,6 +1,6 @@
-import fs from "fs";
 import { Database } from "../../prisma";
 import { File } from "../models/File";
+import { GlobalSingleton } from "../utils/GlobalSingleton";
 import { FileStore } from "./FileStore";
 import { IHasFiles } from "./IHasFiles";
 import { IHasGuidId } from "./IHasGuidId";
@@ -8,8 +8,8 @@ import { IHasGuidId } from "./IHasGuidId";
 export abstract class ModelManager<TModel extends IHasGuidId & IHasFiles> {
     private fileStore: FileStore;
 
-    constructor(fileStore: FileStore) {
-        this.fileStore = fileStore;
+    constructor() {
+        this.fileStore = GlobalSingleton.FileStore;
     }
 
     DeleteFile(item: TModel, file: File) {
