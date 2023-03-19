@@ -1,11 +1,16 @@
-import { Account as DbAccount } from "@prisma/client";
+import { Account as DbAccount, Group } from "@prisma/client";
 import { Database } from "../../prisma";
 import { IHasFiles } from "../database/IHasFiles";
 import { IHasGuidId } from "../database/IHasGuidId";
 import { GetFileInDatabase } from "../database/ModelManager";
+import { Permissions } from "../utils/Permissions";
 import { File } from "./File";
 
-export class Account implements DbAccount, IHasGuidId, IHasFiles {
+type DeeperAccount = DbAccount & {
+    groups: Group[];
+}
+
+export class Account implements DeeperAccount, IHasGuidId, IHasFiles {
     id: string;
     username: string;
     safe_username: string;
@@ -18,11 +23,12 @@ export class Account implements DbAccount, IHasGuidId, IHasFiles {
     permissions_grant: number;
     permissions_revoke: number;
     flags: number;
+    groups: Group[];
 
     Files: File[] = [];
     Hash: string = "";
 
-    constructor(data: DbAccount) {
+    constructor(data: DeeperAccount) {
         this.id = data.id;
         this.username = data.username;
         this.safe_username = data.safe_username;
@@ -35,6 +41,7 @@ export class Account implements DbAccount, IHasGuidId, IHasFiles {
         this.permissions_grant = data.permissions_grant;
         this.permissions_revoke = data.permissions_revoke;
         this.flags = data.flags;
+        this.groups = data.groups;
     }
     
     async loadFiles(): Promise<void> {
@@ -55,6 +62,16 @@ export class Account implements DbAccount, IHasGuidId, IHasFiles {
 
         return null;
     }
+
+    hasPermission(permission: number): boolean {
+        const adminGroup = this.groups.find(g => g.permissions_grant & Permissions.ADMINISTRATOR);
+
+        if (adminGroup)
+            return true;
+
+        return (this.groups.reduce((a, b) => a | b.permissions_grant, 0)
+            & this.groups.reduce((a, b) => a & ~b.permissions_revoke, 0)) == permission;
+    }
 }
 
 export async function GetAccountById(id: string): Promise<Account | null> {
@@ -63,5 +80,10 @@ export async function GetAccountById(id: string): Promise<Account | null> {
     if (!account)
         return null;
 
-    return new Account(account);
+    let groups = await Database.group.findMany({ where: { accounts: { some: { id: id } } } });
+
+    return new Account({
+        ...account,
+        groups: groups
+    });
 }
