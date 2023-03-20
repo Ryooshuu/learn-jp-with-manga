@@ -1,5 +1,5 @@
 import { Request } from "express";
-import { Account } from "../models/Account";
+import { DisplayAccount } from "../models/DisplayAccount";
 
 export type ErrorObject = {
     status: number;
@@ -9,5 +9,5 @@ export type ErrorObject = {
 
 export interface ApiRequest extends Request {
     id?: string;
-    account?: Account
+    account?: DisplayAccount
 }

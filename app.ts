@@ -5,6 +5,7 @@ import cors from "cors";
 import multer from "multer";
 import morgan from "morgan";
 
+import { AccountMiddleware } from "./src/middleware/AccountMiddleware";
 import { RouterMiddleware } from "./src/middleware/RouterMiddleware";
 
 dotenv.config();
@@ -60,7 +61,7 @@ app.use(morgan((tokens, req, res) => {
     ].join(" ");
 }));
 
-// TODO: Eventually have our own middlewares for account management, etc.
+app.use(AccountMiddleware.Handle);
 
 // Moduler file-based routing
 RouterMiddleware.Handle(app);
