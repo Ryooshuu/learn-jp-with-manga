@@ -63,7 +63,7 @@ app.use(morgan((tokens, req, res) => {
 // TODO: Eventually have our own middlewares for account management, etc.
 
 // Moduler file-based routing
-RouterMiddleware.handle(app);
+RouterMiddleware.Handle(app);
 
 app.listen(process.env.API_PORT, () => {
     const now = new Date();
