@@ -59,6 +59,25 @@ export class Manga implements DbManga, IHasGuidId, IHasFiles {
 
         return null;
     }
+
+    toJson(): DbManga {
+        return {
+            id: this.id,
+            title: this.title,
+            alternative_titles: this.alternative_titles,
+            authors: this.authors,
+            artists: this.artists,
+            description: this.description,
+            genres: this.genres,
+            themes: this.themes,
+            demographic: this.demographic,
+            status: this.status,
+            cover_hash: this.cover_hash,
+            publicized_at: this.publicized_at,
+            created_at: this.created_at,
+            updated_at: this.updated_at
+        };
+    }
 }
 
 export async function getMangaById(id: string): Promise<Manga | null> {

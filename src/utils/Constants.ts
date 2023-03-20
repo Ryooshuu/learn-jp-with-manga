@@ -16,9 +16,9 @@ export enum Permissions {
     CREATE_MANGA = 1 << 7,
 
     // MANGA EDITOR PERMISSIONS
-    EDIT_COVER = 1 << 8,
-    EDIT_PAGES = 1 << 9,
-    EDIT_METADATA = 1 << 10,
+    EDIT_MANGA_COVER = 1 << 8,
+    EDIT_MANGA_PAGES = 1 << 9,
+    EDIT_MANGA_METADATA = 1 << 10,
 }
 
 export enum TokenType {

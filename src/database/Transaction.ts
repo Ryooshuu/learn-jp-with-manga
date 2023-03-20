@@ -24,6 +24,11 @@ export class Transaction<TModel extends IHasGuidId> {
                     throw new Error("Cannot modify the id of a transaction.");
                 }
 
+                if (target[prop] === value) {
+                    // Value has not changed.
+                    return true;
+                }
+
                 this.changes.set(prop, {
                     oldValue: target[prop],
                     newValue: value

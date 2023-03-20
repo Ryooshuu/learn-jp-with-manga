@@ -19,8 +19,12 @@ export class Util {
 
     static assertObjectTypes(obj: any, types: object) {
         for (const [key, type] of Object.entries(types)) {
-            if (!Object.hasOwnProperty.bind(obj)(key)) {
+            if (!key.endsWith("?") && !Object.hasOwnProperty.bind(obj)(key)) {
                 return false;
+            }
+
+            if (key.endsWith("?") && !Object.hasOwnProperty.bind(obj)(key.slice(0, -1))) {
+                continue;
             }
 
             if (typeof type === "string" && type.endsWith("[]")) {

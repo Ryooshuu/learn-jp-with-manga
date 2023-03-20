@@ -52,11 +52,11 @@ export abstract class ModelManager<TModel extends IHasGuidId & IHasFiles> {
         }
     }
 
-    delete(item: TModel) {
-        this.getTable().delete({ where: { id: item.id } });
+    async delete(item: TModel) {
+        await this.getTable().delete({ where: { id: item.id } });
 
         for (const file of item.Files) {
-            this.fileStore.delete(file);
+            await this.fileStore.delete(file);
         }
     }
 

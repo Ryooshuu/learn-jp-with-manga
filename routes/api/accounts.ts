@@ -159,7 +159,7 @@ router.patch("/:id", async (req: ApiRequest, res: ApiResponse) => {
         if (!req.account.hasPermission(Permissions.MANAGE_ACCOUNTS)) {
             return res.status(403).json({
                 code: 403,
-                message: "You are not authorized to edit this account.",
+                message: "You are not authorized to change this account's avatar.",
                 required: [
                     "MANAGE_ACCOUNTS"
                 ]
