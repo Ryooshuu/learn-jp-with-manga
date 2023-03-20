@@ -20,3 +20,8 @@ export enum Permissions {
     EDIT_PAGES = 1 << 9,
     EDIT_METADATA = 1 << 10,
 }
+
+export enum TokenType {
+    SESSION,
+    API
+}

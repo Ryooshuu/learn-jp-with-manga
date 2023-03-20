@@ -3,7 +3,7 @@ import { Database } from "../../prisma";
 import { IHasFiles } from "../database/IHasFiles";
 import { IHasGuidId } from "../database/IHasGuidId";
 import { GetFileInDatabase } from "../database/ModelManager";
-import { Permissions } from "../utils/Permissions";
+import { Permissions } from "../utils/Constants";
 import { File } from "./File";
 
 type DeeperAccount = DbAccount & {
