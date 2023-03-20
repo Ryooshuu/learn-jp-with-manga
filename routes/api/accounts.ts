@@ -7,6 +7,9 @@ import { Account as DbAccount } from "@prisma/client";
 import { Permissions } from "../../src/utils/Constants";
 import { Database } from "../../prisma";
 import { DisplayAccount } from "../../src/models/DisplayAccount";
+import sharp from "sharp";
+import { GlobalSingleton } from "../../src/utils/GlobalSingleton";
+import { AccountModelManager } from "../../src/database/AccountModelManager";
 
 const router = Router();
 
@@ -148,6 +151,47 @@ router.patch("/:id", async (req: ApiRequest, res: ApiResponse) => {
                 }
             })
         }
+    }
+
+    const files = req.files as Express.Multer.File[]
+
+    if (files.find(file => file.fieldname === "avatar")) {
+        if (!req.account.hasPermission(Permissions.MANAGE_ACCOUNTS)) {
+            return res.status(403).json({
+                code: 403,
+                message: "You are not authorized to edit this account.",
+                required: [
+                    "MANAGE_ACCOUNTS"
+                ]
+            });
+        }
+
+        const file = files.find(file => file.fieldname === "avatar")!;
+
+        let extensions = ["png", "jpg", "jpeg", "webp"];
+        let extension = file.originalname.split(".").pop();
+
+        if (!extensions.includes(extension!)) {
+            return res.status(415).json({
+                code: 415,
+                message: "The file you uploaded does not match the required file type.",
+                data: {
+                    allowed: extensions
+                }
+            });
+        }
+
+        let avatarBuffer = await sharp(file.buffer)
+            .resize(256, 256)
+            .webp({
+                quality: 80,
+            })
+            .toBuffer();
+        
+        let manager = new AccountModelManager();
+        await manager.setAvatar(account, file.originalname, avatarBuffer);
+
+        changes.push("avatar");
     }
 
     let transaction = new Transaction<DbAccount>();
