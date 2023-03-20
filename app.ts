@@ -61,10 +61,10 @@ app.use(morgan((tokens, req, res) => {
     ].join(" ");
 }));
 
-app.use(AccountMiddleware.Handle);
+app.use(AccountMiddleware.handle);
 
 // Moduler file-based routing
-RouterMiddleware.Handle(app);
+RouterMiddleware.handle(app);
 
 app.listen(process.env.API_PORT, () => {
     const now = new Date();

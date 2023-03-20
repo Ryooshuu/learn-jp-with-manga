@@ -43,7 +43,7 @@ export class RouterMiddleware {
         }
     }
 
-    static Handle(app: Application) {
+    static handle(app: Application) {
         this.importRoutes(app, BASE_PATH);
     }
 }

@@ -29,7 +29,7 @@ export class AccountMiddleware {
         })
     }
 
-    static async Handle(req: ApiRequest, res: ApiResponse, next: NextFunction) {
+    static async handle(req: ApiRequest, res: ApiResponse, next: NextFunction) {
         if (!req.headers.authorization)
             return next();
 

@@ -3,7 +3,7 @@ import { ModelManager } from "./ModelManager";
 import { Manga } from "../models/Manga";
 
 export class MangaModelManager extends ModelManager<Manga> {
-    GetManagedTable() {
+    getManagedTable() {
         return Database.manga;
     }
 
@@ -11,12 +11,12 @@ export class MangaModelManager extends ModelManager<Manga> {
         if (item.Files.length > 0) {
             let cover = item.Files[0];
 
-            await this.ReplaceFile(item, cover, contents);
+            await this.replaceFile(item, cover, contents);
             await this.updateCoverHash(item);
             return;
         }
 
-        await this.AddFile(item, filename, contents);
+        await this.addFile(item, filename, contents);
         await this.updateCoverHash(item);
     }
 

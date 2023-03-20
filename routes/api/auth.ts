@@ -19,7 +19,7 @@ type RegisterRequest = {
 }
 
 router.post("/register", async (req: ApiRequest, res: ApiResponse) => {
-    if (!Util.AssertObject(req.body, ["username", "email", "password"])) {
+    if (!Util.assertObject(req.body, ["username", "email", "password"])) {
         return res.status(400).json({
             code: 400,
             error: "Bad Request",
@@ -71,7 +71,7 @@ router.post("/login", async (req: ApiRequest, res: ApiResponse) => {
             password: split[1],
         };
     } else {
-        if (!Util.AssertObject(req.body, ["email", "password"])) {
+        if (!Util.assertObject(req.body, ["email", "password"])) {
             return res.status(400).json({
                 code: 400,
                 error: "Bad Request",

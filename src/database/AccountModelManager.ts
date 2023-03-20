@@ -3,20 +3,20 @@ import { Account } from "../models/Account";
 import { ModelManager } from "./ModelManager";
 
 export class AccountModelManager extends ModelManager<Account> {
-    GetManagedTable() {
+    getManagedTable() {
         return Database.account;
     }
 
-    async SetAvatar(item: Account, filename: string, contents: Buffer) {
+    async setAvatar(item: Account, filename: string, contents: Buffer) {
         if (item.Files.length > 0) {
             let avatar = item.Files[0];
 
-            await this.ReplaceFile(item, avatar, contents);
+            await this.replaceFile(item, avatar, contents);
             await this.updateAvatarHash(item);
             return;
         }
 
-        await this.AddFile(item, filename, contents);
+        await this.addFile(item, filename, contents);
         await this.updateAvatarHash(item);
     }
 

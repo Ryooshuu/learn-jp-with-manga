@@ -12,58 +12,58 @@ export abstract class ModelManager<TModel extends IHasGuidId & IHasFiles> {
         this.fileStore = GlobalSingleton.FileStore;
     }
 
-    DeleteFile(item: TModel, file: File) {
-        this.fileStore.Delete(file);
+    deleteFile(item: TModel, file: File) {
+        this.fileStore.delete(file);
         item.Files = item.Files.filter(x => x.hash !== file.hash);
     }
 
-    async ReplaceFile(item: TModel, file: File, contents: Buffer): Promise<File> {
-        if (this.fileStore.Exists(file)) {
-            await this.fileStore.Delete(file);
+    async replaceFile(item: TModel, file: File, contents: Buffer): Promise<File> {
+        if (this.fileStore.exists(file)) {
+            await this.fileStore.delete(file);
         }
 
-        let newFile = await this.fileStore.Add(file.name, contents);
+        let newFile = await this.fileStore.add(file.name, contents);
 
         item.Files = item.Files.filter(x => x.hash !== file.hash);
         item.Files.push(newFile);
 
-        return await this.fileStore.Add(file.name, contents);
+        return await this.fileStore.add(file.name, contents);
     }
 
-    async AddFile(item: TModel, filename: string, contents: Buffer): Promise<File> {
-        const existing = GetFile(item, filename);
+    async addFile(item: TModel, filename: string, contents: Buffer): Promise<File> {
+        const existing = getFile(item, filename);
 
         if (existing) {
-            let replacement = await this.ReplaceFile(item, existing, contents);
+            let replacement = await this.replaceFile(item, existing, contents);
             return replacement;
         }
 
-        const file = await this.fileStore.Add(filename, contents);
+        const file = await this.fileStore.add(filename, contents);
         item.Files.push(file);
 
         return file;
     }
 
-    DeleteMany(items: Array<TModel>) {
+    deleteMany(items: Array<TModel>) {
         if (items.length == 0) return;
 
         for (const item of items) {
-            this.Delete(item);
+            this.delete(item);
         }
     }
 
-    Delete(item: TModel) {
-        this.GetTable().delete({ where: { id: item.id } });
+    delete(item: TModel) {
+        this.getTable().delete({ where: { id: item.id } });
 
         for (const file of item.Files) {
-            this.fileStore.Delete(file);
+            this.fileStore.delete(file);
         }
     }
 
-    abstract GetManagedTable(): any;
+    abstract getManagedTable(): any;
 
-    GetTable(): PrismaModel<TModel> {
-        return this.GetManagedTable() as PrismaModel<TModel>;
+    getTable(): PrismaModel<TModel> {
+        return this.getManagedTable() as PrismaModel<TModel>;
     }
 }
 
@@ -81,15 +81,15 @@ type PrismaModel<TModel extends IHasGuidId> = {
  * @param model The model to operate on.
  * @param filename The name of the file to get the storage path of.
  */
-export function GetFile(model: IHasFiles, filename: string): File | null {
+export function getFile(model: IHasFiles, filename: string): File | null {
     return model.Files.find(x => x.name.toLowerCase() === filename.toLowerCase()) || null;
 }
 
-export function GetFileByHash(model: IHasFiles, hash: string): File | null {
+export function getFileByHash(model: IHasFiles, hash: string): File | null {
     return model.Files.find(x => x.hash === hash) || null;
 }
 
-export async function GetFileInDatabase(hash: string): Promise<File | null> {
+export async function getFileInDatabase(hash: string): Promise<File | null> {
     let existing = await Database.file.findFirst({ where: { hash } });
 
     if (!existing)

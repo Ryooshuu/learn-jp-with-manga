@@ -10,11 +10,11 @@ export class File implements DbFile {
         this.name = file.name;
     }
        
-    GetStoragePath(): string {
+    getStoragePath(): string {
         return path.join(this.hash.substring(0, 1), this.hash.substring(0, 2), this.hash);
     }
        
-    GetStorageDirectory(): string {
+    getStorageDirectory(): string {
         return path.join(this.hash.substring(0, 1), this.hash.substring(0, 2));
     }
 }

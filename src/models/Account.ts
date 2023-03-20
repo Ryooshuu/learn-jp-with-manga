@@ -2,7 +2,7 @@ import { Account as DbAccount, Group } from "@prisma/client";
 import { Database } from "../../prisma";
 import { IHasFiles } from "../database/IHasFiles";
 import { IHasGuidId } from "../database/IHasGuidId";
-import { GetFileInDatabase } from "../database/ModelManager";
+import { getFileInDatabase } from "../database/ModelManager";
 import { Permissions } from "../utils/Constants";
 import { File } from "./File";
 
@@ -44,12 +44,12 @@ export class Account implements DeeperAccount, IHasGuidId, IHasFiles {
         this.groups = data.groups;
     }
     
-    async LoadFiles(): Promise<void> {
+    async loadFiles(): Promise<void> {
         if (this.Files.length > 0)
             return;
 
         if (this.avatar_hash) {
-            let file = await GetFileInDatabase(this.avatar_hash);
+            let file = await getFileInDatabase(this.avatar_hash);
 
             if (file)
                 this.Files.push(file);
@@ -63,7 +63,7 @@ export class Account implements DeeperAccount, IHasGuidId, IHasFiles {
         return null;
     }
 
-    HasPermission(permission: number): boolean {
+    hasPermission(permission: number): boolean {
         const adminGroup = this.groups.find(g => g.permissions_grant & Permissions.ADMINISTRATOR);
 
         if (adminGroup)
@@ -74,7 +74,7 @@ export class Account implements DeeperAccount, IHasGuidId, IHasFiles {
     }
 }
 
-export async function GetAccountById(id: string): Promise<Account | null> {
+export async function getAccountById(id: string): Promise<Account | null> {
     let account = await Database.account.findFirst({ where: { id: id } });
 
     if (!account)
@@ -86,6 +86,6 @@ export async function GetAccountById(id: string): Promise<Account | null> {
         groups: groups
     });
 
-    await model.LoadFiles();
+    await model.loadFiles();
     return model;
 }

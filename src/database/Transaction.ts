@@ -11,7 +11,7 @@ export class Transaction<TModel extends IHasGuidId> {
     private proxy: TModel | null = null;
     private changes: Map<string, ValueChanged> = new Map();
     
-    StartTransaction(item: TModel) {
+    startTransaction(item: TModel) {
         if (this.proxy) {
             throw new Error("Cannot start a transaction when one is already in progress.");
         }
@@ -37,7 +37,7 @@ export class Transaction<TModel extends IHasGuidId> {
         return this.proxy!;
     }
 
-    async Commit(table: string) {
+    async commit(table: string) {
         if (!this.proxy) {
             throw new Error("Cannot commit a transaction that has not been started.");
         }

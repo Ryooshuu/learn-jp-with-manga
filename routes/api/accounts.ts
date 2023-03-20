@@ -2,7 +2,7 @@ import { Router } from "express";
 import { Transaction } from "../../src/database/Transaction";
 import { ApiRequest } from "../../src/interfaces/ApiRequest";
 import { ApiResponse } from "../../src/interfaces/ApiResponse";
-import { GetAccountById } from "../../src/models/Account";
+import { getAccountById } from "../../src/models/Account";
 import { Account as DbAccount } from "@prisma/client";
 import { Permissions } from "../../src/utils/Constants";
 import { Database } from "../../prisma";
@@ -48,7 +48,7 @@ router.patch("/:id", async (req: ApiRequest, res: ApiResponse) => {
     //     });
     // }
 
-    const account = await GetAccountById(req.params.id);
+    const account = await getAccountById(req.params.id);
 
     if (!account) {
         return res.status(404).json({
@@ -64,14 +64,14 @@ router.patch("/:id", async (req: ApiRequest, res: ApiResponse) => {
 
     // Assert that the user has a higher role than the account they're trying to edit.
     if (accountGroups.length > 0) {
-        if (ownGroups[0].priority <= accountGroups[0].priority && !req.account.HasPermission(Permissions.ADMINISTRATOR)) {
+        if (ownGroups[0].priority <= accountGroups[0].priority && !req.account.hasPermission(Permissions.ADMINISTRATOR)) {
             return res.status(403).json({
                 code: 403,
                 message: "You are not authorized to edit this account."
             });
         }
     } else {
-        if (ownGroups.length === 0 && !req.account.HasPermission(Permissions.ADMINISTRATOR)) {
+        if (ownGroups.length === 0 && !req.account.hasPermission(Permissions.ADMINISTRATOR)) {
             return res.status(403).json({
                 code: 403,
                 message: "You are not authorized to edit this account."
@@ -83,7 +83,7 @@ router.patch("/:id", async (req: ApiRequest, res: ApiResponse) => {
 
     // this has to be done separately from the other fields because it's a special case.
     if (req.body.groups) {
-        if (!req.account.HasPermission(Permissions.MANAGE_USER_GROUPS)) {
+        if (!req.account.hasPermission(Permissions.MANAGE_USER_GROUPS)) {
             return res.status(403).json({
                 code: 403,
                 message: "You are not authorized to edit this account.",
@@ -151,10 +151,10 @@ router.patch("/:id", async (req: ApiRequest, res: ApiResponse) => {
     }
 
     let transaction = new Transaction<DbAccount>();
-    let proxy = transaction.StartTransaction(account);
+    let proxy = transaction.startTransaction(account);
 
     if (req.body.username && req.body.username !== account.username) {
-        if (!req.account.HasPermission(Permissions.MANAGE_ACCOUNTS)) {
+        if (!req.account.hasPermission(Permissions.MANAGE_ACCOUNTS)) {
             return res.status(403).json({
                 code: 403,
                 message: "You are not authorized to edit this account.",
@@ -168,7 +168,7 @@ router.patch("/:id", async (req: ApiRequest, res: ApiResponse) => {
         proxy.safe_username = req.body.username.replace(" ", "_").toLowerCase();
     }
 
-    let transactionChanges = await transaction.Commit("accounts");
+    let transactionChanges = await transaction.commit("accounts");
 
     if (transactionChanges.size > 0) {
         let transactionChangesArray = Array.from(transactionChanges.keys());
@@ -182,7 +182,7 @@ router.patch("/:id", async (req: ApiRequest, res: ApiResponse) => {
         });
     }
 
-    const newAccount = await GetAccountById(account.id);
+    const newAccount = await getAccountById(account.id);
 
     return res.status(200).json({
         code: 200,

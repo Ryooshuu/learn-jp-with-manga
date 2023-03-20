@@ -33,7 +33,7 @@ export class DisplayAccount implements IHasGuidId {
         this.groups = data.groups;
     }
 
-    HasPermission(permission: number): boolean {
+    hasPermission(permission: number): boolean {
         const adminGroup = this.groups.find(g => g.permissions_grant & Permissions.ADMINISTRATOR);
 
         if (adminGroup)

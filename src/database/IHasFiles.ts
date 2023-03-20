@@ -15,5 +15,5 @@ export interface IHasFiles {
      */
     Hash: string;
 
-    LoadFiles(): Promise<void>;
+    loadFiles(): Promise<void>;
 }

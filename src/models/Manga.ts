@@ -3,7 +3,7 @@ import { Database } from "../../prisma";
 import { File } from "./File";
 import { IHasFiles } from "../database/IHasFiles";
 import { IHasGuidId } from "../database/IHasGuidId";
-import { GetFileInDatabase } from "../database/ModelManager";
+import { getFileInDatabase } from "../database/ModelManager";
 
 export class Manga implements DbManga, IHasGuidId, IHasFiles {
     id: string;
@@ -41,19 +41,19 @@ export class Manga implements DbManga, IHasGuidId, IHasFiles {
         this.updated_at = data.updated_at;
     }
 
-    async LoadFiles(): Promise<void> {
+    async loadFiles(): Promise<void> {
         if (this.Files.length > 0)
             return;
 
         if (this.cover_hash) {
-            let file = await GetFileInDatabase(this.cover_hash);
+            let file = await getFileInDatabase(this.cover_hash);
 
             if (file)
                 this.Files.push(file);
         }
     }
 
-    get Cover(): File | null {
+    get cover(): File | null {
         if (this.Files.length > 0)
             return this.Files[0];
 
@@ -61,14 +61,14 @@ export class Manga implements DbManga, IHasGuidId, IHasFiles {
     }
 }
 
-export async function GetMangaById(id: string): Promise<Manga | null> {
+export async function getMangaById(id: string): Promise<Manga | null> {
     let manga = await Database.manga.findFirst({ where: { id: id } });
 
     if (!manga)
         return null;
 
     let model = new Manga(manga);
-    await model.LoadFiles();
+    await model.loadFiles();
 
     return model;
 }

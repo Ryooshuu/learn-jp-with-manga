@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { File } from "../models/File";
-import { ComputeSha256Hash } from "../utils/hashing";
+import { computeSha256Hash } from "../utils/hashing";
 import { Database } from "../../prisma";
 
 export class FileStore {
@@ -17,8 +17,8 @@ export class FileStore {
             fs.mkdirSync(target, { recursive: true });
     }
 
-    async Add(filename: string, data: Buffer, addToDatabase = true): Promise<File> {
-        let hash = ComputeSha256Hash(data);
+    async add(filename: string, data: Buffer, addToDatabase = true): Promise<File> {
+        let hash = computeSha256Hash(data);
         let existing = await Database.file.findFirst({
             where: { hash: hash }
         });
@@ -39,40 +39,40 @@ export class FileStore {
         return file;
     }
 
-    async Delete(file: File): Promise<void> {
-        fs.unlinkSync(path.join(this.target, file.GetStoragePath()));
+    async delete(file: File): Promise<void> {
+        fs.unlinkSync(path.join(this.target, file.getStoragePath()));
 
         await Database.file.delete({
             where: { hash: file.hash }
         });
     }
 
-    Exists(file: File): boolean {
-        return fs.existsSync(path.join(this.target, file.GetStoragePath()));
+    exists(file: File): boolean {
+        return fs.existsSync(path.join(this.target, file.getStoragePath()));
     }
 
-    GetPath(file: File): string {
-        return path.join(this.target, file.GetStoragePath());
+    getPath(file: File): string {
+        return path.join(this.target, file.getStoragePath());
     }
 
     private copyToStore(file: File, data: Buffer): void {
-        let storagePath = file.GetStorageDirectory();
+        let storagePath = file.getStorageDirectory();
         let targetPath = path.join(this.target, storagePath);
         
         if (!fs.existsSync(targetPath))
             fs.mkdirSync(targetPath, { recursive: true });
 
-        fs.createWriteStream(path.join(this.target, file.GetStoragePath())).write(data);
+        fs.createWriteStream(path.join(this.target, file.getStoragePath())).write(data);
     }
 
     private checkFileExistsAndMatchesHash(file: File): boolean {
-        let storagePath = file.GetStoragePath();
+        let storagePath = file.getStoragePath();
 
         // we may be re-adding a file to fix missing store entries.
         if (!fs.existsSync(path.join(this.target, storagePath)))
             return false;
 
         let fileData = fs.readFileSync(path.join(this.target, storagePath));
-        return ComputeSha256Hash(fileData) === file.hash;
+        return computeSha256Hash(fileData) === file.hash;
     }
 }

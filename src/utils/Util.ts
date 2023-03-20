@@ -3,7 +3,7 @@ export class Util {
         throw new Error("This class may not be instantiated.");
     }
 
-    static AssertObject(obj: any, keys: string[]) {
+    static assertObject(obj: any, keys: string[]) {
         if (typeof obj !== "object"){
             return false;
         }
@@ -17,7 +17,7 @@ export class Util {
         return true;
     }
 
-    static AssertObjectTypes(obj: any, types: object) {
+    static assertObjectTypes(obj: any, types: object) {
         for (const [key, type] of Object.entries(types)) {
             if (!Object.hasOwnProperty.bind(obj)(key)) {
                 return false;
@@ -40,7 +40,7 @@ export class Util {
                 if (typeof obj[key] !== "object")
                     return false;
                 
-                if (!this.AssertObjectTypes(obj[key], type))
+                if (!this.assertObjectTypes(obj[key], type))
                     return false;
             } else {
                 if (typeof obj[key] !== type)
