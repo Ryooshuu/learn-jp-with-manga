@@ -8,7 +8,7 @@ export enum Permissions {
     MANAGE_ACCOUNTS = 1 << 3,
 
     // SITE MODERATOR PERMISSIONS
-    MANAGE_GROUPS = 1 << 4,
+    MANAGE_USER_GROUPS = 1 << 4,
     MANAGE_MANGA = 1 << 5,
 
     // MANGA OWNER PERMISSIONS

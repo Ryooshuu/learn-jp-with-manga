@@ -1,3 +1,4 @@
+import { Permissions } from "../utils/Constants";
 import { Account as DbAccount, Group } from "@prisma/client";
 import { IHasGuidId } from "../database/IHasGuidId";
 
@@ -30,5 +31,15 @@ export class DisplayAccount implements IHasGuidId {
         this.permissions_revoke = data.permissions_revoke;
         this.flags = data.flags;
         this.groups = data.groups;
+    }
+
+    HasPermission(permission: number): boolean {
+        const adminGroup = this.groups.find(g => g.permissions_grant & Permissions.ADMINISTRATOR);
+
+        if (adminGroup)
+            return true;
+
+        return (this.groups.reduce((a, b) => a | b.permissions_grant, 0)
+            & this.groups.reduce((a, b) => a & ~b.permissions_revoke, 0)) == permission;
     }
 }
