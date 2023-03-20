@@ -1,6 +1,6 @@
 import { Database } from "../../prisma";
 import { ModelManager } from "./ModelManager";
-import { Manga } from "../models/MangaModel";
+import { Manga } from "../models/Manga";
 
 export class MangaModelManager extends ModelManager<Manga> {
     GetManagedTable() {

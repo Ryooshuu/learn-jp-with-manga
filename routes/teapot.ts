@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { MangaModelManager } from "../src/database/MangaModelManager";
-import { GetMangaById } from "../src/models/MangaModel";
+import { GetMangaById } from "../src/models/Manga";
 import { ApiRequest } from "../src/interfaces/ApiRequest";
 import { ApiResponse } from "../src/interfaces/ApiResponse";
 
