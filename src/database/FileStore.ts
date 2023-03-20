@@ -55,6 +55,10 @@ export class FileStore {
         return path.join(this.target, file.getStoragePath());
     }
 
+    getBuffer(file: File): Buffer {
+        return fs.readFileSync(path.join(this.target, file.getStoragePath()));
+    }
+
     private copyToStore(file: File, data: Buffer): void {
         let storagePath = file.getStorageDirectory();
         let targetPath = path.join(this.target, storagePath);

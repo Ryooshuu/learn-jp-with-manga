@@ -60,6 +60,10 @@ export abstract class ModelManager<TModel extends IHasGuidId & IHasFiles> {
         }
     }
 
+    getBuffer(file: File): Buffer {
+        return this.fileStore.getBuffer(file);
+    }
+
     abstract getManagedTable(): any;
 
     getTable(): PrismaModel<TModel> {
