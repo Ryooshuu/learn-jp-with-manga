@@ -44,17 +44,17 @@ export abstract class ModelManager<TModel extends IHasGuidId & IHasFiles> {
         return file;
     }
 
-    deleteMany(items: Array<TModel>) {
+    async deleteMany(items: Array<TModel>) {
         if (items.length == 0) return;
 
         for (const item of items) {
-            this.delete(item);
+            await this.delete(item);
         }
     }
 
     async delete(item: TModel) {
         await this.getTable().delete({ where: { id: item.id } });
-
+        
         for (const file of item.Files) {
             await this.fileStore.delete(file);
         }
