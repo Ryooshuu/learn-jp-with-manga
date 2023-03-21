@@ -32,7 +32,10 @@ router.get("/:id", async (req: ApiRequest, res: ApiResponse) => {
         });
     }
 
-    return res.status(200).json(manga);
+    return res.status(200).json({
+        code: 200,
+        data: manga
+    });
 });
 
 type CreateMangaBody = {
