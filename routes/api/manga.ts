@@ -13,7 +13,17 @@ import { Permissions } from "../../src/utils/Constants";
 const router = Router();
 
 router.get("/:id", async (req: ApiRequest, res: ApiResponse) => {
-    let manga = await getMangaById(req.params.id);
+    let manga = await Database.manga.findFirst({
+        where: { id: req.params.id },
+        include: {
+            chapters: {
+                include: {
+                    volume: true,
+                    pages: true,
+                }
+            }
+        }
+    });
 
     if (!manga) {
         res.status(404).json({
@@ -22,7 +32,7 @@ router.get("/:id", async (req: ApiRequest, res: ApiResponse) => {
         });
     }
 
-    return res.status(200).json(manga!.toJson());
+    return res.status(200).json(manga);
 });
 
 type CreateMangaBody = {
