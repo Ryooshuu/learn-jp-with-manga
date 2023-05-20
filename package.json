@@ -7,6 +7,7 @@
     "lint": "npx eslint .",
     "lint:fix": "npx eslint . --fix",
     "db:merge": "npx aurora",
+    "db:generate": "npx prisma generate",
     "db:types": "npm run db:merge && npm run db:generate",
     "db:migrate": "npm run db:merge && npx prisma migrate dev"
   },
