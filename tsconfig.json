@@ -3,6 +3,7 @@
         "outDir": "./dist",
         "module": "commonjs",
         "target": "esnext",
+        "types": ["node", "jest"],
         "strict": true,
         "declaration": true,
         "esModuleInterop": true,
@@ -12,9 +13,23 @@
         "noFallthroughCasesInSwitch": true,
         "skipLibCheck": true
     },
+    "ts-node": {
+        "transpileOnly": true,
+        "files": true,
+        "compilerOptions": {
+            "rootDir": "."
+        }
+    },
     "include": [
         "prisma/**/*.ts",
         "src/**/*",
-        "routes/**/*.ts"
+        "routes/**/*.ts",
+        "jest.config.js"
     ],
+    "exclude": [
+        "**/*.test.*",
+        "**/__mocks__/*",
+        "**/__tests__/*",
+        "./node_modules/**/*"
+    ]
 }
