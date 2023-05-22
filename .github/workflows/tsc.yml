@@ -26,7 +26,7 @@ jobs:
                     - 5432:5432
         
         env:
-            DATABASE_URL: postgresql://postgres:postgres@localhost:5432/fastify-graphql
+            DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test
 
         steps:
             - name: Checkout project
@@ -43,5 +43,11 @@ jobs:
             - name: Generate Prisma Client
               run: npm run db:types
 
+            - name: Run Prisma Migrations
+              run: npx prisma db push
+
             - name: Run TSC
               run: npx tsc
+
+            - name: Run Jest
+              run: npm run test
